@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { getTrades } from "@/lib/api";
+import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import { getTrades, deleteTrade } from "@/lib/api";
+import { isAdmin } from "@/lib/telegram";
 import { Trade } from "@/lib/types";
 
 function formatNumber(n: number): string {
@@ -23,6 +25,7 @@ function formatDate(dateStr: string): string {
 export default function HistoryPage() {
   const [trades, setTrades] = useState<Trade[]>([]);
   const [loading, setLoading] = useState(true);
+  const admin = isAdmin();
 
   useEffect(() => {
     getTrades()
@@ -30,6 +33,16 @@ export default function HistoryPage() {
       .catch(() => setTrades([]))
       .finally(() => setLoading(false));
   }, []);
+
+  async function handleDelete(id: number) {
+    if (!confirm("Удалить сделку?")) return;
+    try {
+      await deleteTrade(id);
+      setTrades((prev) => prev.filter((t) => t.id !== id));
+    } catch {
+      alert("Не удалось удалить сделку");
+    }
+  }
 
   if (loading) {
     return (
@@ -42,7 +55,7 @@ export default function HistoryPage() {
   return (
     <div className="space-y-4">
       <motion.h1
-        className="text-xl font-semibold"
+        className="text-xl font-medium"
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
@@ -56,32 +69,53 @@ export default function HistoryPage() {
           <p className="text-xs text-muted">Первая инвестиция — самый важный шаг</p>
         </div>
       ) : (
-        <div className="space-y-2">
+        <AnimatePresence initial={false}>
           {trades.map((trade, i) => (
             <motion.div
               key={trade.id}
-              className="bg-card rounded-xl p-4 shadow-sm border border-border flex items-center justify-between"
+              className="bg-card rounded-xl p-4 shadow-sm border border-border"
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, x: -16 }}
               transition={{ duration: 0.25, delay: i * 0.04 }}
+              layout
             >
-              <div>
-                <p className="font-medium text-sm">{trade.ticker}</p>
-                <p className="text-xs text-muted">
-                  {formatDate(trade.date)}
-                </p>
+              {/* Основная строка */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium text-sm">{trade.ticker}</p>
+                  <p className="text-xs text-muted">{formatDate(trade.date)}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-medium">
+                    {formatNumber(trade.quantity)} шт.
+                  </p>
+                  <p className="text-xs text-muted">
+                    по {formatNumber(trade.price)} ₽
+                  </p>
+                </div>
               </div>
-              <div className="text-right">
-                <p className="text-sm font-medium">
-                  {formatNumber(trade.quantity)} шт.
-                </p>
-                <p className="text-xs text-muted">
-                  по {formatNumber(trade.price)} ₽
-                </p>
-              </div>
+
+              {/* Кнопки — только для админа */}
+              {admin && (
+                <div className="flex gap-4 mt-3 pt-3 border-t border-border">
+                  <Link
+                    href={`/add?id=${trade.id}`}
+                    className="text-xs text-muted hover:text-foreground transition-colors"
+                  >
+                    Изменить
+                  </Link>
+                  <button
+                    onClick={() => handleDelete(trade.id)}
+                    className="text-xs text-muted hover:text-foreground transition-colors"
+                  >
+                    Удалить
+                  </button>
+                </div>
+              )}
             </motion.div>
           ))}
-        </div>
+        </AnimatePresence>
       )}
     </div>
   );
