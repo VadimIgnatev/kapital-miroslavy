@@ -51,9 +51,10 @@ export default function HistoryPage() {
       </motion.h1>
 
       {trades.length === 0 ? (
-        <p className="text-sm text-muted py-8 text-center">
-          Пока нет сделок
-        </p>
+        <div className="py-10 text-center space-y-1">
+          <p className="text-sm font-medium text-foreground">Начало пути 🌱</p>
+          <p className="text-xs text-muted">Первая инвестиция — самый важный шаг</p>
+        </div>
       ) : (
         <div className="space-y-2">
           {trades.map((trade, i) => (

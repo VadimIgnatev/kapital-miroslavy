@@ -134,9 +134,10 @@ export default function HomePage() {
       >
         <p className="text-[13px] font-medium text-muted mb-2 mt-4">Активы</p>
         {assets.length === 0 ? (
-          <p className="text-sm text-muted py-8 text-center">
-            Пока нет активов
-          </p>
+          <div className="py-10 text-center space-y-1">
+            <p className="text-sm font-medium text-foreground">Начало пути 🌱</p>
+            <p className="text-xs text-muted">Первая инвестиция — самый важный шаг</p>
+          </div>
         ) : (
           <div className="space-y-2">
             {assets.map((asset, i) => (

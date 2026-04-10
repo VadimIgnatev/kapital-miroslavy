@@ -6,10 +6,10 @@ import { motion } from "framer-motion";
 import { isAdmin } from "@/lib/telegram";
 
 const ALL_TABS = [
-  { href: "/",         label: "Портфель",  icon: "◉",  adminOnly: false },
-  { href: "/history",  label: "История",   icon: "☰",  adminOnly: false },
-  { href: "/strategy", label: "Стратегия", icon: "◎",  adminOnly: false },
-  { href: "/add",      label: "Добавить",  icon: "＋", adminOnly: true  },
+  { href: "/",         label: "Портфель",  adminOnly: false },
+  { href: "/history",  label: "История",   adminOnly: false },
+  { href: "/strategy", label: "Стратегия", adminOnly: false },
+  { href: "/add",      label: "Добавить",  adminOnly: true  },
 ];
 
 export default function BottomNav() {
@@ -26,14 +26,15 @@ export default function BottomNav() {
           return (
             <Link key={tab.href} href={tab.href} className="flex-1">
               <motion.div
-                className="flex flex-col items-center gap-0.5 py-2"
-                whileTap={{ scale: 0.92 }}
-                transition={{ duration: 0.15 }}
+                className="flex items-center justify-center h-full py-2"
+                whileTap={{ scale: 0.94 }}
+                transition={{ duration: 0.12 }}
               >
-                <span className={`text-lg ${isActive ? "text-accent" : "text-muted"}`}>
-                  {tab.icon}
-                </span>
-                <span className={`text-[11px] font-medium ${isActive ? "text-accent" : "text-muted"}`}>
+                <span
+                  className={`text-[13px] font-medium transition-colors ${
+                    isActive ? "text-accent" : "text-muted"
+                  }`}
+                >
                   {tab.label}
                 </span>
               </motion.div>
