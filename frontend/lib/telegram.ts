@@ -1,6 +1,6 @@
 // Утилита для работы с Telegram WebApp
-// Сейчас: определение среды + логирование пользователя
-// Будущее: проверка прав (isAdmin), передача initData на backend
+
+const ADMIN_ID = 267870421;
 
 interface TelegramUser {
   id: number;
@@ -37,4 +37,10 @@ export function isTelegram(): boolean {
 export function getTelegramUser(): TelegramUser | null {
   if (!isTelegram()) return null;
   return window.Telegram?.WebApp.initDataUnsafe?.user ?? null;
+}
+
+/** Возвращает true, если текущий пользователь — администратор */
+export function isAdmin(): boolean {
+  const user = getTelegramUser();
+  return user?.id === ADMIN_ID;
 }

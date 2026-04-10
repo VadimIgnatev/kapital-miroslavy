@@ -3,16 +3,20 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
+import { isAdmin } from "@/lib/telegram";
 
-const tabs = [
-  { href: "/", label: "Портфель", icon: "◉" },
-  { href: "/history", label: "История", icon: "☰" },
-  { href: "/strategy", label: "Стратегия", icon: "◎" },
-  { href: "/add", label: "Добавить", icon: "＋" },
+const ALL_TABS = [
+  { href: "/",         label: "Портфель",  icon: "◉",  adminOnly: false },
+  { href: "/history",  label: "История",   icon: "☰",  adminOnly: false },
+  { href: "/strategy", label: "Стратегия", icon: "◎",  adminOnly: false },
+  { href: "/add",      label: "Добавить",  icon: "＋", adminOnly: true  },
 ];
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const admin = isAdmin();
+
+  const tabs = ALL_TABS.filter((tab) => !tab.adminOnly || admin);
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border">
@@ -26,18 +30,10 @@ export default function BottomNav() {
                 whileTap={{ scale: 0.92 }}
                 transition={{ duration: 0.15 }}
               >
-                <span
-                  className={`text-lg ${
-                    isActive ? "text-accent" : "text-muted"
-                  }`}
-                >
+                <span className={`text-lg ${isActive ? "text-accent" : "text-muted"}`}>
                   {tab.icon}
                 </span>
-                <span
-                  className={`text-[11px] font-medium ${
-                    isActive ? "text-accent" : "text-muted"
-                  }`}
-                >
+                <span className={`text-[11px] font-medium ${isActive ? "text-accent" : "text-muted"}`}>
                   {tab.label}
                 </span>
               </motion.div>
