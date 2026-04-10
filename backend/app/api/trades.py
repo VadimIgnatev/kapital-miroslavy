@@ -1,5 +1,5 @@
 from datetime import date
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, field_validator
 from sqlalchemy.orm import Session
 
@@ -7,6 +7,8 @@ from app.db.database import get_db
 from app.models.trade import Trade
 
 router = APIRouter()
+
+ADMIN_ID = 267870421
 
 # Разрешённые тикеры (жёстко заданы)
 ALLOWED_TICKERS = [
@@ -45,7 +47,16 @@ class TradeOut(BaseModel):
 
 
 @router.post("/trades", response_model=TradeOut)
-def create_trade(trade: TradeCreate, db: Session = Depends(get_db)):
+def create_trade(trade: TradeCreate, request: Request, db: Session = Depends(get_db)):
+    raw = request.headers.get("X-Telegram-User-Id", "")
+    try:
+        caller_id = int(raw)
+    except ValueError:
+        raise HTTPException(status_code=403, detail="Forbidden")
+
+    if caller_id != ADMIN_ID:
+        raise HTTPException(status_code=403, detail="Forbidden")
+
     db_trade = Trade(
         ticker=trade.ticker,
         quantity=trade.quantity,
