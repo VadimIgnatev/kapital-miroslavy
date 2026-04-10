@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fafaf9;
+  --foreground: #1c1917;
+  --card: #ffffff;
+  --muted: #78716c;
+  --accent: #4a7c59;
+  --accent-light: #e8f0ea;
+  --border: #e7e5e4;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-light: var(--accent-light);
+  --color-border: var(--border);
+  --font-sans: var(--font-geist-sans);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  /* Убираем лишние отступы внутри Telegram WebApp */
+  margin: 0;
+  padding: 0;
+  /* Safe area для iOS (notch / home indicator) */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Учитываем safe area (iPhone home indicator, Telegram bottom bar) */
+main {
+  padding-bottom: max(5rem, calc(5rem + env(safe-area-inset-bottom, 0px)));
+}

@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+*.egg-info/
+.env
+.env.local
+
+# SQLite DB (не коммитим данные)
+*.db
+*.sqlite
+
+# Next.js
+frontend/.next/
+frontend/node_modules/
+frontend/.env.local
+frontend/.env
+
+# OS
+.DS_Store
+.Trash/
+
+# Claude
+.claude/
